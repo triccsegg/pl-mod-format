@@ -195,7 +195,10 @@ open OUTF, ">:encoding(UTF-8)", "$output_file_phase"  or die "can't open file $o
   while (<INF>)
   {
     chomp;
-	s!(<a\s*href\s*=\s*"https://blogger.googleusercontent.com/img/.*?").*?>\s*(<img.*?/>\s*</a>)!$1>$3!g;
+	if($_ !~ /<a\s*href.*?=s\d+\s*"/)
+	{
+		s!(<a\s*href\s*=\s*"https://blogger.googleusercontent.com/img/.*?)".*?>.*?(<img.*?)\s*"\s*/>\s*</a>!$1=s16000">$2=s16000"/></a>!g;
+	}
     print OUTF "$_\n";
   }
   
@@ -212,12 +215,12 @@ open OUTF, ">:encoding(UTF-8)", "$output_file_phase"  or die "can't open file $o
   {
     chomp;
 	
-	s!height="640"!!g;
-	s!width="640"!!g;
-	(my $mod_str = $_) =~ s,/s\d+/,/s1600/,g; #keep orignal size at $_
-	if($_ !~ m,/s1600/,)
+	#s!height="640"!!g;
+	#s!width="640"!!g;
+	(my $mod_str = $_) =~ s,=s\d+",=s16000",g; #keep orignal size at $_
+	if($_ =~ m,=s\d+", and $_ !~ m,=s16000",)
 	{
-	  print LOGF "=== change the size to s1600 ===\n";
+	  print LOGF "=== change the size to s16000 ===\n";
 	  print LOGF "org:$_\n";
 	  print LOGF "mod:$mod_str\n";
 	}
